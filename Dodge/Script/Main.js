@@ -13,11 +13,26 @@ function main() {
     window.addEventListener('keyup', keyUp, false)
     window.addEventListener('keydown', keyDown, false)
 
+    glInit()
+
     frameCurrent = Date.now()
     gameLoop = requestAnimationFrame(loop)
 }
 
 function loop() {
+    framePrevious = Date.now()
+    frameCurrent = framePrevious
+    delta = frameCurrent - framePrevious
+
+    loopScene()
+
+    gameLoop = requestAnimationFrame(loop)
+}
+
+function keyUp(event) {
+}
+
+function keyDown(event) {
 }
 
 function errorHandle() {
