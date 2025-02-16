@@ -1,5 +1,6 @@
 const vSource = `#version 300 es
     uniform vec2 u_translate;
+    uniform vec2 u_scale;
     in vec4 a_position;
     in vec2 a_texcoord;
     out vec3 p_color;
@@ -12,23 +13,38 @@ const vSource = `#version 300 es
             0.0, 0.0, 1.0, 0.0,
             u_translate.x, u_translate.y, 0.0, 1.0
         );
-
-        gl_Position = m_translate * a_position;
+        mat4 m_scale = mat4(
+            u_scale.x, 0.0, 0.0, 0.0,
+            0.0, u_scale.y, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0
+        );
+        mat4 m_proj = mat4(
+            2.0 / (1280.0 - 0.0), 0.0, 0.0, 0.0,
+            0.0, 2.0 / (0.0 - 800.0), 0.0, 0.0,
+            0.0, 0.0, -2.0 / (1.0 + 1.0), 0.0,
+            -(1280.0 + 0.0) / (1280.0 - 0.0), -(0.0 + 800.0) / (0.0 - 800.0), -(0.0) / (2.0), 1.0
+        );
+        vec4 pos = vec4(a_texcoord, 0.0, 1.0);
+        pos = m_scale * pos;
+        pos = m_translate * pos;
+        pos = m_proj * pos;
+        gl_Position = pos;
         p_texcoord = a_texcoord;
     }
 `
 
 const fSource = `#version 300 es
     precision highp float;
-    uniform int mode;
+    uniform int u_mode;
     uniform vec3 u_color;
     uniform sampler2D t_sampler;
     in vec2 p_texcoord;
     out vec4 o_color;
 
     void main() {
-        if (mode == 0) {
-            o_color = vec4(u_color);
+        if (u_mode == 0) {
+            o_color = vec4(u_color, 1.0);
         } else {
             o_color = texture(t_sampler, p_texcoord); 
         }
@@ -46,4 +62,30 @@ function glInit() {
     gl.attachShader(program, vShader)
     gl.attachShader(program, fShader)
     gl.linkProgram(program)
+
+    luColor = gl.getUniformLocation(program, "u_color")
+    luTranslate = gl.getUniformLocation(program, "u_translate")
+    luScale = gl.getUniformLocation(program, "u_scale")
+    luMode = gl.getUniformLocation(program, "u_mode")
+    laPosition = gl.getAttribLocation(program, "a_position")
+    laTexcoord = gl.getAttribLocation(program, "a_texcoord")
+    
+    vao = gl.createVertexArray()
+    vbo = gl.createBuffer(gl.ARRAY_BUFFER)
+    bt = gl.createBuffer(gl.ARRAY_BUFFER)
+
+    gl.bindVertexArray(vao)
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        1.0, -1.0, 1.0, 0.0,
+        1.0, 1.0, 0.0, 0.0,
+        -1.0, -1.0, 1.0, 1.0,
+        -1.0, -1.0, 1.0, 1.0,
+        1.0, 1.0, 0.0, 0.0,
+        -1.0, 1.0, 0.0, 1.0
+    ]), gl.STATIC_DRAW)
+    gl.vertexAttribPointer(laPosition, 2, gl.FLOAT, false, 4 * 4, 0)
+    gl.enableVertexAttribArray(laPosition)
+    gl.vertexAttribPointer(laTexcoord, 2, gl.FLOAT, false, 4 * 4, 2 * 4)
+    gl.enableVertexAttribArray(laTexcoord)
 }

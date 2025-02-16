@@ -4,4 +4,12 @@ function loopScene() {
 
 function renderScene() {
     renderInit()
+    renderGameScene()
+}
+
+function keyDownScene(key) {
+    
+}
+
+function keyUpScene(key) {
 }

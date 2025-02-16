@@ -5,8 +5,8 @@ let context
 
 let program, vShader, fShader
 let laPosition, laTexcoord
-let luMode, luTranslate
-let vao, vbo, bt
+let luMode, luTranslate, luColor
+let vao, vbo
 
 let gameLoop
 let frameCurrent
