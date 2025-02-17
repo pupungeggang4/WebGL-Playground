@@ -15,16 +15,24 @@ class Player {
 
     move() {
         if (keyPress['Up'] == true) {
-            this.rect.position.y -= this.speed * delta / 1000
+            if (this.rect.position.y > 0) {
+                this.rect.position.y -= this.speed * delta / 1000
+            }
         }
         if (keyPress['Left'] == true) {
-            this.rect.position.x -= this.speed * delta / 1000
+            if (this.rect.position.x > 0) {
+                this.rect.position.x -= this.speed * delta / 1000
+            }
         }
         if (keyPress['Down'] == true) {
-            this.rect.position.y += this.speed * delta / 1000
+            if (this.rect.position.y < 800) {
+                this.rect.position.y += this.speed * delta / 1000
+            }
         }
         if (keyPress['Right'] == true) {
-            this.rect.position.x += this.speed * delta / 1000
+            if (this.rect.position.x < 1280) {
+                this.rect.position.x += this.speed * delta / 1000
+            }
         }
     }
 
