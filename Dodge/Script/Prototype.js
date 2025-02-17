@@ -96,6 +96,7 @@ class Bullet {
     speed = 200
 
     constructor(d) {
+        this.speed = 160 + Math.random() * 80
         if (d === 0) {
             this.rect = new Rect2D(Math.random() * 1280, -20, 16, 16)
             this.direction = 'D'
